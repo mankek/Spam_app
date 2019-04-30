@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+</head>
+<body>
+    <h1>Welcome to the Spam Classifier</h1>
+    <div id="form_1">
+        <p>Please input text below:</p>
+        <form action="/analyze" method="post">
+            Text Input: <textarea name="text"></textarea><br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <div id="results" style="display:none">
+        {{ result }}
+    </div>
+    <script>
+        var result = {{ result|safe|tojson }}
+        if (result != "None"){
+            document.getElementById("form_1").style.display = "none";
+            document.getElementById("results").style.display = "block";
+        }
+    </script>
+</body>
+</html>
