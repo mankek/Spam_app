@@ -14,10 +14,11 @@
         </form>
     </div>
     <div id="results" style="display:none">
-        {{ result }}
+        <h2>This email is: {{ label }}!</h2>
+        <h2>With a likelihood of: {{ prob }}%</h2>
     </div>
     <script>
-        var result = {{ result|safe|tojson }}
+        var result = {{ label|safe|tojson }}
         if (result != "None"){
             document.getElementById("form_1").style.display = "none";
             document.getElementById("results").style.display = "block";
