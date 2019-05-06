@@ -4,6 +4,7 @@ import numpy
 import pickle
 import os
 import sqlite3
+from update import update_model
 
 app = Flask(__name__)
 
@@ -126,4 +127,5 @@ def store():
 
 
 if __name__ == '__main__':
+    clf = update_model(db_path, clf)
     app.run(debug=True)
