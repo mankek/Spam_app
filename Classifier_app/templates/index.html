@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Home Page</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Welcome to the Spam Classifier</h1>
+    <div id="header"><h1>Welcome to the Spam Classifier</h1></div><br><br>
     <div id="form_1">
         <p>Please input text below:</p>
         <form action="/analyze" method="post">
-            Text Input: <textarea name="text"></textarea><br>
+            <textarea name="text"></textarea><br>
             <button type="submit">Submit</button>
         </form>
     </div>
     <div id="results" style="display:none">
         <h2>This email is: {{ label }}!</h2>
         <h2>With a likelihood of: {{ prob }}%</h2>
+        <form action="/storage" method="post">
+            Do you agree?
+            <input type="radio" value="spam" name="label_in">I think this is Spam!
+            <input type="radio" value="not spam" name="label_in">I don't think this is Spam!
+            <input type="radio" value="{{ label }}" name="label_in">I don't know!<br><br><br>
+            <button type="submit">Submit</button>
+        </form>
     </div>
     <script>
         var result = {{ label|safe|tojson }}

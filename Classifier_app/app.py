@@ -1,30 +1,16 @@
 #!/usr/bin/python
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import numpy
 import pickle
 import os
+import sqlite3
 
 app = Flask(__name__)
 
-clf_dir = r"..\Spam_classifier\pkl_objects"
-clf = pickle.load(open(os.path.join(clf_dir, 'classifier.pkl'), 'rb'))
-
-
-@app.route("/", methods=["GET"])
-@app.route("/index", methods=["GET"])
-def index():
-    return render_template("index.html", label=None, prob=None)
-
-
-@app.route("/analyze", methods=["POST"])
-def analyze():
-    params = []
-    input_text = request.form["text"]
-    params.extend(find_words(input_text))
-    params.extend(find_chars(input_text))
-    params.extend(find_capitals(input_text))
-    label, probability = classify(params)
-    return render_template("index.html", label=label, prob=probability)
+pickle_dir = r"pkl_objects"
+clf = pickle.load(open(os.path.join(pickle_dir, 'classifier.pkl'), 'rb'))
+scaler = pickle.load(open(os.path.join(pickle_dir, 'scaler.pkl'), 'rb'))
+db_path = r"spam.sqlite"
 
 
 def find_words(input_text):
@@ -69,18 +55,74 @@ def find_capitals(input_text):
             length = 0
     if length != 0:
         capital_lengths.append(length)
-    capitals.append(round(sum(capital_lengths)/len(capital_lengths), 2))
-    capitals.append(max(capital_lengths))
-    capitals.append(len(capital_lengths))
+    if not capital_lengths:
+        capitals.extend([0, 0, 0])
+    else:
+        capitals.append(round(sum(capital_lengths)/len(capital_lengths), 2))
+        capitals.append(max(capital_lengths))
+        capitals.append(len(capital_lengths))
     return capitals
 
 
-def classify(params):
-    params = [params]
+def classify(params_in):
+    params_in = scaler.transform([params_in])
     classes = {1: "spam", 0: "not spam"}
-    y = clf.predict(params)[0]
-    proba = numpy.max(clf.predict_proba(params))
+    y = clf.predict(params_in)[0]
+    proba = numpy.max(clf.predict_proba(params_in))
     return classes[y], str(round(proba * 100, 2))
+
+
+def train(parameters, y):
+    parameters = [parameters]
+    parameters = scaler.transform(parameters)
+    clf.partial_fit(parameters, [y])
+
+
+def sqlite_entry(parameters, y):
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    c.execute('''INSERT INTO spam_db
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+              (parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5],
+               parameters[6], parameters[7], parameters[8], parameters[9], parameters[10], parameters[11],
+               parameters[12], parameters[13], parameters[14], parameters[15], parameters[16], parameters[17],
+               parameters[18], parameters[19], parameters[20], parameters[21], parameters[22], parameters[23],
+               parameters[24], parameters[25], parameters[26], parameters[27], parameters[28], parameters[29],
+               parameters[30], parameters[31], parameters[32], parameters[33], parameters[34], parameters[35],
+               parameters[36], parameters[37], parameters[38], parameters[39], parameters[40], parameters[41],
+               parameters[42], parameters[43], parameters[44], parameters[45], parameters[46], parameters[47],
+               parameters[48], parameters[49], parameters[50], parameters[51], parameters[52], parameters[53],
+               parameters[54], parameters[55], parameters[56], y))
+    conn.commit()
+    conn.close()
+
+
+@app.route("/", methods=["GET"])
+@app.route("/index", methods=["GET"])
+def index():
+    return render_template("index.html", label=None, prob=None)
+
+
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    global params
+    params = []
+    input_text = request.form["text"]
+    params.extend(find_words(input_text))
+    params.extend(find_chars(input_text))
+    params.extend(find_capitals(input_text))
+    label, probability = classify(params)
+    return render_template("index.html", label=label, prob=probability)
+
+
+@app.route("/storage", methods=["POST"])
+def store():
+    in_label = request.form["label_in"]
+    labels = {"spam": 1, "not spam": 0}
+    train(params, labels[in_label])
+    sqlite_entry(params, labels[in_label])
+    return redirect(url_for("index"))
 
 
 if __name__ == '__main__':
