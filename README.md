@@ -1,11 +1,11 @@
 This is a small flask application with a machine learning model embedded within; made for learning purpose.
 
-The model is a made using scikit-learn and is composed of a pipeline that includes standardization and a logistic regression model which undergoes 
-5-fold cross-validation.
+The model used is a an SGD classifier model implemented through scikit-learn. All data is standardized using an
+StandardScaler object. The model is set up for online learning, with user input being stored in a sqlite database.
 
 The data used for training was the SPAM E-mail Database data from the UCI Machine Learning repository.
 
-The purpose of this application is to take the content of an email and return the likelihood that it is or is not spam.
+The purpose of this application is to take the text content of an email and return the likelihood that it is or is not spam.
 
 The model itself was created and trained within the classifier_etc.py script, saved as a pickle object and loaded into the application. Since the 
 original data is composed of various statistics about input text, the application has several functions dedicated to gathering these statistics 
