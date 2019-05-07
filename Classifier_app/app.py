@@ -8,9 +8,9 @@ from update import update_model
 
 app = Flask(__name__)
 
-pickle_dir = r"pkl_objects"
-clf = pickle.load(open(os.path.join(pickle_dir, 'classifier.pkl'), 'rb'))
-scaler = pickle.load(open(os.path.join(pickle_dir, 'scaler.pkl'), 'rb'))
+cur_dir = os.path.dirname(__file__)
+clf = pickle.load(open(os.path.join(cur_dir, 'pkl_objects', 'classifier.pkl'), 'rb'))
+scaler = pickle.load(open(os.path.join(cur_dir, 'pkl_objects', 'scaler.pkl'), 'rb'))
 db_path = r"spam.sqlite"
 
 

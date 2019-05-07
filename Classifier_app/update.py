@@ -4,9 +4,8 @@ import os
 import numpy
 import sqlite3
 
-
-pickle_dir = r"pkl_objects"
-scaler = pickle.load(open(os.path.join(pickle_dir, 'scaler.pkl'), 'rb'))
+cur_dir = os.path.dirname(__file__)
+scaler = pickle.load(open(os.path.join(cur_dir, 'pkl_objects', 'scaler.pkl'), 'rb'))
 
 
 def update_model(db_path, model, batch_size=1000):
@@ -29,15 +28,15 @@ def update_model(db_path, model, batch_size=1000):
     return model
 
 
-cur_dir = os.path.dirname(__file__)
-
-clf = pickle.load(open(os.path.join(pickle_dir, 'classifier.pkl'), 'rb'))
+clf = pickle.load(open(os.path.join(cur_dir, 'pkl_objects', 'classifier.pkl'), 'rb'))
 
 db = os.path.join(cur_dir, 'spam.sqlite')
 
 clf = update_model(db_path=db, model=clf)
 
-pickle.dump(clf, open(os.path.join(pickle_dir, 'classifier.pkl'), 'wb'), protocol=4)
+pickle.dump(clf, open(os.path.join(cur_dir, 'pkl_objects', 'classifier.pkl'), 'wb'), protocol=4)
+
+print("Model has been updated.")
 
 
 
