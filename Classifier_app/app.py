@@ -110,6 +110,8 @@ def analyze():
     global params
     params = []
     input_text = request.form["text"]
+    if input_text == "":
+        return redirect(url_for("index"))
     params.extend(find_words(input_text))
     params.extend(find_chars(input_text))
     params.extend(find_capitals(input_text))

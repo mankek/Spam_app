@@ -1,4 +1,4 @@
-This is a small flask application with a machine learning model embedded within; made for learning purpose.
+This is a small flask application with a machine learning model embedded within; made for learning purposes.
 
 The model used is a an SGD classifier model implemented through scikit-learn. All data is standardized using an
 StandardScaler object. The model is set up for online learning, with user input being stored in a sqlite database.
@@ -15,7 +15,7 @@ which are then fed to the model.
 
 The database that stores user input was initialized in the db_create.py script.
 
-[The application is hosted on pythonanywhere here](
+[The application is hosted on pythonanywhere here](http://kmanke.pythonanywhere.com/)
 
 **Running the application**
 
