@@ -1,6 +1,6 @@
 This is a small flask application with a machine learning model embedded within; made for learning purposes.
 
-The model used is a an SGD classifier model implemented through scikit-learn. All data is standardized using an
+The model used is an SGD classifier model implemented through scikit-learn. All data is standardized using an
 StandardScaler object. The model is set up for online learning, with user input being stored in a sqlite database.
 
 Note: The May 2, 2019 commit uses a StandardScaler + logistic regression pipeline incapable of online learning and no db.
