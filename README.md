@@ -20,6 +20,7 @@ The database that stores user input was initialized in the db_create.py script.
 **Running the application**
 
 Install the packages in the requirements.txt
+
 Navigate to the Classifier_app folder and run the following:
 
 ```
